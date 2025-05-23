@@ -1,0 +1,42 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: clang++ build project",
+            "command": "/usr/bin/clang++",
+            "args": [
+                "-std=c++17",
+                "-I${workspaceFolder}/include",
+                "-I/opt/homebrew/include/SDL2",
+                "-I/opt/homebrew/Cellar/sdl2_gfx/1.0.4/include/SDL2",
+                "-I/opt/homebrew/include",
+                "-fcolor-diagnostics",
+                "-fansi-escape-codes",
+                "-g",
+                "${workspaceFolder}/src/main.cpp",
+                "${workspaceFolder}/src/Board.cpp",
+                "${workspaceFolder}/src/Player.cpp",
+                "${workspaceFolder}/src/SDLWindow.cpp",
+                "${workspaceFolder}/src/BoardRenderer.cpp",
+                "-o",
+                "${workspaceFolder}/tic_tac_toe",
+                "-L/opt/homebrew/lib",
+                "-lSDL2",
+                "-lSDL2_image",
+                "-lSDL2_gfx"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Сборка проекта c SDL2"
+        }
+    ],
+    "version": "2.0.0"
+}
