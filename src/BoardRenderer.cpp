@@ -9,16 +9,16 @@ BoardRenderer::~BoardRenderer()
 }
 
 void BoardRenderer::drawBackground(SDL_Renderer* renderer, int winWidth, int winHeight,
-                                   Uint8 topR, Uint8 topG, Uint8 topB,
-                                   Uint8 bottomR, Uint8 bottomG, Uint8 bottomB)
+                                   const Color &topColor, const Color &bottomColor)
 {
     for (int y = 0; y < winHeight; ++y)
     {
         float factor = static_cast<float>(y) / (winHeight - 1);
-        Uint8 r = static_cast<Uint8>(topR * (1 - factor) + bottomR * factor);
-        Uint8 g = static_cast<Uint8>(topG * (1 - factor) + bottomG * factor);
-        Uint8 b = static_cast<Uint8>(topB * (1 - factor) + bottomB * factor);
-        SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+        Uint8 r = static_cast<Uint8>(topColor.r * (1 - factor) + bottomColor.r * factor);
+        Uint8 g = static_cast<Uint8>(topColor.g * (1 - factor) + bottomColor.g * factor);
+        Uint8 b = static_cast<Uint8>(topColor.b * (1 - factor) + bottomColor.b * factor);
+        Uint8 a = static_cast<Uint8>(topColor.a * (1 - factor) + bottomColor.a * factor);
+        SDL_SetRenderDrawColor(renderer, r, g, b, a);
         SDL_RenderDrawLine(renderer, 0, y, winWidth, y);
     }
 }
@@ -58,13 +58,16 @@ void BoardRenderer::drawO(SDL_Renderer* renderer, int x, int y, int cellWidth, i
     int centerX = x + cellWidth / 2;
     int centerY = y + cellHeight / 2;
     int radius = ((cellWidth < cellHeight ? cellWidth : cellHeight) / 2) - 10;
-    thickCircle(renderer, centerX, centerY, radius, 0, 0, 255, 255, thickness);
+    Color blue(0, 0, 255, 255);
+    thickCircle(renderer, centerX, centerY, radius, blue, thickness);
 }
 
 void BoardRenderer::draw(SDL_Renderer* renderer, int winWidth, int winHeight, const Board& board) {
     int thickness = 5;
 
-    drawBackground(renderer, winWidth, winHeight, 245, 245, 220, 222, 207, 190);
+    Color topColor(245, 245, 220);
+    Color bottomColor(222, 207, 190);
+    drawBackground(renderer, winWidth, winHeight, topColor, bottomColor);
 
     drawGrid(renderer, winWidth, winHeight, thickness);
 
@@ -86,8 +89,8 @@ void BoardRenderer::draw(SDL_Renderer* renderer, int winWidth, int winHeight, co
     }
 }
 
-void BoardRenderer::thickCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a, int thickness)
+void BoardRenderer::thickCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius, const Color &color, int thickness)
 {
     for(int i = 0; i < thickness; ++i)
-        circleRGBA(renderer, centerX, centerY, radius - i, r, g, b, a);
+        circleRGBA(renderer, centerX, centerY, radius - i, color.r, color.g, color.b, color.a);
 }

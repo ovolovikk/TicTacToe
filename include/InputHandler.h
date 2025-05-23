@@ -1,11 +1,11 @@
 #pragma once
 #include "Board.h"
 #include "Player.h"
+#include "GameState.h"
 #include <SDL2/SDL.h>
 
 class InputHandler
 {
 public:
-    static bool processEvent(const SDL_Event &event, int cellWidth, int cellHeight, Board &board,
-                             Player *&currentPlayer, Player &playerX, Player &player0);
+    static void processEvent(const SDL_Event &event, GameState &gameState, bool &isRunning);
 };

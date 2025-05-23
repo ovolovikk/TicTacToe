@@ -1,25 +1,27 @@
 #include "InputHandler.h"
+#include <iostream>
 
-bool InputHandler::processEvent(const SDL_Event &event, int cellWidth, int cellHeight, Board &board,
-                                 Player *&currentPlayer, Player &playerX, Player &playerO)
+void InputHandler::processEvent(const SDL_Event &event, GameState &gameState, bool &isRunning)
 {
     if(event.type == SDL_MOUSEBUTTONDOWN)
     {
         int mouseX = event.button.x;
         int mouseY = event.button.y;
-        int col = mouseX / cellWidth;
-        int row = mouseY / cellHeight;
+        int col = mouseX / gameState.cellWidth;
+        int row = mouseY / gameState.cellHeight;
         if(row >= 0 && row < 3 && col >= 0 && col < 3)
         {
-            if(currentPlayer->makeMove(board, row, col))
+            if(gameState.currentPlayer->makeMove(gameState.board, row, col))
             {
-                if(board.hasSomeoneWin(currentPlayer))
+                if(gameState.board.hasSomeoneWin(gameState.currentPlayer))
                 {
-                    return true;
+                    std::cout << "Player: " << gameState.currentPlayer->getSymbol() << " has won!\n";
+                    isRunning = false;
                 };
-                currentPlayer = (currentPlayer->getSymbol() == 'X') ? &playerO : &playerX;
+                gameState.currentPlayer = (gameState.currentPlayer->getSymbol() == 'X') 
+                                         ? &gameState.playerO 
+                                         : &gameState.playerX;
             }
         }
     }
-    return false;
 }

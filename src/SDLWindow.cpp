@@ -62,17 +62,9 @@ void SDLWindow::run()
     int winWidth, winHeight;
     SDL_GetWindowSize(window, &winWidth, &winHeight);
 
-    Board board;
     BoardRenderer boardRenderer;
     
-    Player playerX('X');
-    Player playerO('0');
-
-    Player* currentPlayer = &playerX;
-
-    int cellWidth = winWidth / 3;
-    int cellHeight = winHeight / 3;
-
+    GameState gameState(winWidth, winHeight);
 
     SDL_Event event;
     while (isRunning)
@@ -83,18 +75,14 @@ void SDLWindow::run()
                 isRunning = false;
             else
             {
-                if(InputHandler::processEvent(event, cellWidth, cellHeight, board, 
-                                           currentPlayer, playerX, playerO))
-                {
-                    isRunning = false;
-                }
+                InputHandler::processEvent(event, gameState, isRunning);
             }
         }
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
         SDL_RenderClear(renderer);
 
-        boardRenderer.draw(renderer, winWidth, winHeight, board);
+        boardRenderer.draw(renderer, winWidth, winHeight, gameState.board);
 
         SDL_RenderPresent(renderer);
         SDL_Delay(16);
