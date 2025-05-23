@@ -2,6 +2,7 @@
 #include "Board.h"
 #include "BoardRenderer.h"
 #include "Player.h"
+#include "InputHandler.h"
 #include <SDL2_gfxPrimitives.h>
 #include <iostream>
 #include <cmath>
@@ -80,9 +81,10 @@ void SDLWindow::run()
         {
             if(event.type == SDL_QUIT)
                 isRunning = false;
-            else if(event.type == SDL_MOUSEMOTION)
+            else
             {
-                int mouseX = event.button.x;
+                InputHandler::processEvent(event, cellWidth, cellHeight, board, 
+                                           currentPlayer, playerX, playerO);
             }
         }
 
