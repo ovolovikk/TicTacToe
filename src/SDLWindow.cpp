@@ -86,7 +86,7 @@ void SDLWindow::run()
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
         SDL_RenderClear(renderer);
 
         boardRenderer.draw(renderer, winWidth, winHeight, board);
