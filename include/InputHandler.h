@@ -6,6 +6,6 @@
 class InputHandler
 {
 public:
-    static void processEvent(const SDL_Event &event, int cellWidth, int cellHeight, Board &board,
+    static bool processEvent(const SDL_Event &event, int cellWidth, int cellHeight, Board &board,
                              Player *&currentPlayer, Player &playerX, Player &player0);
 };

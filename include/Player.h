@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Board.h"
-#include <iostream>
+class Board;
 
 class Player {
 private:

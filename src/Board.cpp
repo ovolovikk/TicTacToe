@@ -21,3 +21,24 @@ char Board::getCell(int row, int col) const
         return cells[row][col];
     return ' ';
 }
+
+bool Board::hasSomeoneWin(Player* player)
+{   
+    char ch = player->getSymbol();
+    // check if any horizontal
+    if((cells[0][0] == ch && cells[0][1] == ch && cells[0][2] == ch) ||
+       (cells[1][0] == ch && cells[1][1] == ch && cells[1][2] == ch) ||
+       (cells[2][0] == ch && cells[2][1] == ch && cells[2][2] == ch))
+    return true;
+    // check if any vertical
+    if((cells[0][0] == ch && cells[1][0] == ch && cells[2][0] == ch) ||
+       (cells[0][1] == ch && cells[1][1] == ch && cells[2][1] == ch) ||
+       (cells[0][2] == ch && cells[1][2] == ch && cells[2][2] == ch))
+    return true;
+    // check if any horizontal
+    if((cells[0][0] == ch && cells[1][1] == ch && cells[2][2] == ch) ||
+       (cells[0][2] == ch && cells[1][1] == ch && cells[2][0] == ch))
+    return true;
+
+    return false;
+}

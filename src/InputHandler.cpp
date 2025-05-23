@@ -1,6 +1,6 @@
 #include "InputHandler.h"
 
-void InputHandler::processEvent(const SDL_Event &event, int cellWidth, int cellHeight, Board &board,
+bool InputHandler::processEvent(const SDL_Event &event, int cellWidth, int cellHeight, Board &board,
                                  Player *&currentPlayer, Player &playerX, Player &playerO)
 {
     if(event.type == SDL_MOUSEBUTTONDOWN)
@@ -13,8 +13,13 @@ void InputHandler::processEvent(const SDL_Event &event, int cellWidth, int cellH
         {
             if(currentPlayer->makeMove(board, row, col))
             {
+                if(board.hasSomeoneWin(currentPlayer))
+                {
+                    return true;
+                };
                 currentPlayer = (currentPlayer->getSymbol() == 'X') ? &playerO : &playerX;
             }
         }
     }
+    return false;
 }

@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Board.h"
 
 Player::Player(char Symbol) : symbol(Symbol), score(0) 
 {

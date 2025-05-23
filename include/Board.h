@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Player.h"
 #include <SDL2/SDL.h>
+
 
 class Board {
 private:
@@ -9,4 +11,5 @@ public:
     Board();
     bool setCell(int row, int col, char symbol);
     char getCell(int row, int col) const;
+    bool hasSomeoneWin(Player* player);
 };

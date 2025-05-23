@@ -83,8 +83,11 @@ void SDLWindow::run()
                 isRunning = false;
             else
             {
-                InputHandler::processEvent(event, cellWidth, cellHeight, board, 
-                                           currentPlayer, playerX, playerO);
+                if(InputHandler::processEvent(event, cellWidth, cellHeight, board, 
+                                           currentPlayer, playerX, playerO))
+                {
+                    isRunning = false;
+                }
             }
         }
 
