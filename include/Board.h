@@ -11,5 +11,5 @@ public:
     Board();
     bool setCell(int row, int col, char symbol);
     char getCell(int row, int col) const;
-    bool hasSomeoneWin(Player* player);
+    bool hasSomeoneWin(Player* player, int &winCase, int &index);
 };

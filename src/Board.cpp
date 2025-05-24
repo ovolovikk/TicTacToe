@@ -22,23 +22,32 @@ char Board::getCell(int row, int col) const
     return ' ';
 }
 
-bool Board::hasSomeoneWin(Player* player)
+bool Board::hasSomeoneWin(Player* player, int &winCase, int &index)
 {   
     char ch = player->getSymbol();
     // check if any horizontal
-    if((cells[0][0] == ch && cells[0][1] == ch && cells[0][2] == ch) ||
-       (cells[1][0] == ch && cells[1][1] == ch && cells[1][2] == ch) ||
-       (cells[2][0] == ch && cells[2][1] == ch && cells[2][2] == ch))
-    return true;
+    for(int i = 0; i < 3; ++i) {
+        if(cells[i][0] == ch && cells[i][1] == ch && cells[i][2] == ch) {
+            winCase = 0; index = i;
+            return true;
+        }
+    }
     // check if any vertical
-    if((cells[0][0] == ch && cells[1][0] == ch && cells[2][0] == ch) ||
-       (cells[0][1] == ch && cells[1][1] == ch && cells[2][1] == ch) ||
-       (cells[0][2] == ch && cells[1][2] == ch && cells[2][2] == ch))
-    return true;
-    // check if any horizontal
-    if((cells[0][0] == ch && cells[1][1] == ch && cells[2][2] == ch) ||
-       (cells[0][2] == ch && cells[1][1] == ch && cells[2][0] == ch))
-    return true;
-
+    for(int j = 0; j < 3; ++j) {
+        if(cells[0][j] == ch && cells[1][j] == ch && cells[2][j] == ch) {
+            winCase = 1; index = j;
+            return true;
+        }
+    }
+    // main diagonal
+    if(cells[0][0] == ch && cells[1][1] == ch && cells[2][2] == ch) {
+        winCase = 2; index = -1;
+        return true;
+    }
+    // additional diagonal
+    if(cells[0][2] == ch && cells[1][1] == ch && cells[2][0] == ch) {
+        winCase = 3; index = -1;
+        return true;
+    }
     return false;
 }

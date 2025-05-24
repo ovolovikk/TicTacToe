@@ -19,6 +19,8 @@
                 "${workspaceFolder}/src/SDLWindow.cpp",
                 "${workspaceFolder}/src/BoardRenderer.cpp",
                 "${workspaceFolder}/src/InputHandler.cpp",
+                "${workspaceFolder}/src/Button.cpp",
+                "${workspaceFolder}/src/GameController.cpp",
                 "-o",
                 "${workspaceFolder}/tic_tac_toe",
                 "-L/opt/homebrew/lib",
