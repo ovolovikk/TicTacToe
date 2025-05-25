@@ -51,3 +51,12 @@ bool Board::hasSomeoneWin(Player* player, int &winCase, int &index)
     }
     return false;
 }
+
+bool Board::isFull() const
+{
+    for (int i = 0; i < 3; ++i)
+        for(int j = 0;j < 3;++j)
+            if(cells[i][j] == ' ')
+                return false;
+    return true;
+}

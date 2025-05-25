@@ -1,4 +1,5 @@
 #include "InputHandler.h"
+#include "GameLogic.h"
 #include <iostream>
 
 void InputHandler::processEvent(const SDL_Event &event, GameState &gameState, bool &isRunning)
@@ -16,27 +17,15 @@ void InputHandler::processEvent(const SDL_Event &event, GameState &gameState, bo
             }
             return;
         }
+        // processing click on game board cells
         int mouseX = event.button.x;
         int mouseY = event.button.y;
         int col = mouseX / gameState.cellWidth;
         int row = mouseY / gameState.cellHeight;
         if(row >= 0 && row < 3 && col >= 0 && col < 3)
         {
-            if(gameState.currentPlayer->makeMove(gameState.board, row, col))
-            {
-                int winCase, winIdx;
-                if(gameState.board.hasSomeoneWin(gameState.currentPlayer, winCase, winIdx))
-                {
-                    std::cout << "Player: " << gameState.currentPlayer->getSymbol() << " has won!\n";
-                    gameState.winInfo.win = true;
-                    gameState.winInfo.winCase = winCase;
-                    gameState.winInfo.index = winIdx;
-                    gameState.gameOver = true;
-                };
-                gameState.currentPlayer = (gameState.currentPlayer->getSymbol() == 'X') 
-                                         ? &gameState.playerO 
-                                         : &gameState.playerX;
-            }
+            GameLogic logic;
+            logic.processMove(gameState, row, col);
         }
     }
 }
