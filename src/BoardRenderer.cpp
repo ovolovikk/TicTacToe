@@ -1,96 +1,80 @@
 #include "BoardRenderer.h"
-#include <SDL2_gfxPrimitives.h>
+#include <algorithm>
 
 BoardRenderer::BoardRenderer()
 {
 }
+
 BoardRenderer::~BoardRenderer()
 {
 }
 
-void BoardRenderer::drawBackground(SDL_Renderer* renderer, int winWidth, int winHeight,
-                                   const Color &topColor, const Color &bottomColor)
+void BoardRenderer::draw(SDL_Renderer* renderer, int winWidth, int winHeight, const Board& board, AssetManager &assetManager)
 {
-    for (int y = 0; y < winHeight; ++y)
+    // Draw the full-screen clean background.
+    SDL_Texture* cleanTex = assetManager.getTexture("assets/clean_screen_texture.png");
+    if(cleanTex)
+        SDL_RenderCopy(renderer, cleanTex, nullptr, nullptr);
+
+    // Load the board texture (which will nearly fill the screen)
+    SDL_Texture* boardTex = assetManager.getTexture("assets/board_texture.png");
+    if (!boardTex)
+        return;
+
+    // Get intrinsic board texture dimensions.
+    int boardW, boardH;
+    SDL_QueryTexture(boardTex, nullptr, nullptr, &boardW, &boardH);
+
+    float scale = 0.98f * std::min(winWidth / static_cast<float>(boardW), winHeight / static_cast<float>(boardH));
+    int newBoardW = static_cast<int>(boardW * scale);
+    int newBoardH = static_cast<int>(boardH * scale);
+
+    // Center the board texture in the window.
+    SDL_Rect boardRect;
+    boardRect.w = newBoardW;
+    boardRect.h = newBoardH;
+    boardRect.x = (winWidth - newBoardW) / 2;
+    boardRect.y = (winHeight - newBoardH) / 2;
+
+    SDL_RenderCopy(renderer, boardTex, nullptr, &boardRect);
+
+    // Draw the moves ('X' and '0') on top of the board.
+    SDL_Texture* xTex = assetManager.getTexture("assets/x_texture.png");
+    SDL_Texture* oTex = assetManager.getTexture("assets/0_texture.png");
+
+    // Each cell size is based on the drawn board texture.
+    int cellW = boardRect.w / 3;
+    int cellH = boardRect.h / 3;
+
+    // Use moveScale = 0.8 to have moves occupy 80% of a cell.
+    const float moveScale = 0.8f;
+    int moveW = static_cast<int>(cellW * moveScale);
+    int moveH = static_cast<int>(cellH * moveScale);
+
+    for (int row = 0; row < 3; ++row)
     {
-        float factor = static_cast<float>(y) / (winHeight - 1);
-        Uint8 r = static_cast<Uint8>(topColor.r * (1 - factor) + bottomColor.r * factor);
-        Uint8 g = static_cast<Uint8>(topColor.g * (1 - factor) + bottomColor.g * factor);
-        Uint8 b = static_cast<Uint8>(topColor.b * (1 - factor) + bottomColor.b * factor);
-        Uint8 a = static_cast<Uint8>(topColor.a * (1 - factor) + bottomColor.a * factor);
-        SDL_SetRenderDrawColor(renderer, r, g, b, a);
-        SDL_RenderDrawLine(renderer, 0, y, winWidth, y);
-    }
-}
-
-void BoardRenderer::drawGrid(SDL_Renderer* renderer, int winWidth, int winHeight, int thickness)
-{
-    int cellWidth = winWidth / 3;
-    int cellHeight = winHeight / 3;
-
-    for (int i = 1; i < 3; ++i)
-    {
-        int x = i * cellWidth;
-        thickLineRGBA(renderer, x, 0, x, winHeight, thickness, 145, 208, 241, 255);
-    }
-
-    for (int i = 1; i < 3; ++i)
-    {
-        int y = i * cellHeight;
-        thickLineRGBA(renderer, 0, y, winWidth, y, thickness, 145, 208, 241, 255);
-    }
-}
-
-void BoardRenderer::drawX(SDL_Renderer* renderer, int x, int y, int cellWidth, int cellHeight, int thickness)
-{
-    thickLineRGBA(renderer,
-                    x + 10, y + 10,
-                    x + cellWidth - 10, y + cellHeight - 10,
-                    thickness, 255, 0, 0, 255);
-    thickLineRGBA(renderer,
-                    x + cellWidth - 10, y + 10,
-                    x + 10, y + cellHeight - 10,
-                    thickness, 255, 0, 0, 255);
-}
-
-void BoardRenderer::drawO(SDL_Renderer* renderer, int x, int y, int cellWidth, int cellHeight, int thickness)
-{
-    int centerX = x + cellWidth / 2;
-    int centerY = y + cellHeight / 2;
-    int radius = ((cellWidth < cellHeight ? cellWidth : cellHeight) / 2) - 10;
-    Color blue(0, 0, 255, 255);
-    thickCircle(renderer, centerX, centerY, radius, blue, thickness);
-}
-
-void BoardRenderer::draw(SDL_Renderer* renderer, int winWidth, int winHeight, const Board& board) {
-    int thickness = 5;
-
-    Color topColor(245, 245, 220);
-    Color bottomColor(222, 207, 190);
-    drawBackground(renderer, winWidth, winHeight, topColor, bottomColor);
-
-    drawGrid(renderer, winWidth, winHeight, thickness);
-
-    int cellWidth = winWidth / 3;
-    int cellHeight = winHeight / 3;
-
-    for(int row = 0; row < 3; ++row)
-    {
-        for(int col = 0; col < 3; ++col)
+        for (int col = 0; col < 3; ++col)
         {
-            int cellX = col * cellWidth;
-            int cellY = row * cellHeight;
             char symbol = board.getCell(row, col);
-            if(symbol == 'X')
-                drawX(renderer, cellX, cellY, cellWidth, cellHeight, thickness);
+            SDL_Texture* moveTex = nullptr;
+            if (symbol == 'X')
+                moveTex = xTex;
             else if (symbol == '0')
-                drawO(renderer, cellX, cellY, cellWidth, cellHeight, thickness);
+                moveTex = oTex;
+
+            if (moveTex)
+            {
+                // Compute cell center based on boardRect.
+                int cellCenterX = boardRect.x + col * cellW + cellW / 2;
+                int cellCenterY = boardRect.y + row * cellH + cellH / 2;
+
+                // Center move texture in the cell.
+                int dx = cellCenterX - moveW / 2;
+                int dy = cellCenterY - moveH / 2;
+
+                SDL_Rect moveRect = { dx, dy, moveW, moveH };
+                SDL_RenderCopy(renderer, moveTex, nullptr, &moveRect);
+            }
         }
     }
-}
-
-void BoardRenderer::thickCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius, const Color &color, int thickness)
-{
-    for(int i = 0; i < thickness; ++i)
-        circleRGBA(renderer, centerX, centerY, radius - i, color.r, color.g, color.b, color.a);
 }

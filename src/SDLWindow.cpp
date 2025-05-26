@@ -38,16 +38,6 @@ bool SDLWindow::init(const char* title, int width, int height)
         return false;
     }
     
-    boardTexture = IMG_LoadTexture(renderer, "assets/board.png");
-    if(!boardTexture)
-    {
-        std::cerr << "IMG_LoadTexture Error: " << IMG_GetError() << std::endl;
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        IMG_Quit();
-        SDL_Quit();
-        return false;
-    }
     isRunning = true;
     return true;
 }

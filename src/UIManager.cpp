@@ -25,11 +25,25 @@ void UIManager::drawEndGameOverlay(const GameState& gameState)
     SDL_RenderFillRect(renderer, &overlay);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 
-    // Draw "Play again" button with our Button class
-    // Button already stored in GameState.playAgainButton,
-    // possible to draw addititonal UI Elements.
-    gameState.playAgainButton.draw(renderer);
+    // Draw "Play again" button
+    SDL_Texture* playAgainTex = assetManager.getTexture("assets/play_again_texture.png");
+    if (playAgainTex)
+    {
+        int texW, texH;
+        SDL_QueryTexture(playAgainTex, nullptr, nullptr, &texW, &texH);
+        // add a scale factor less than 1
+        float buttonScale = 0.7f;
+        int scaledW = static_cast<int>(texW * buttonScale);
+        int scaledH = static_cast<int>(texH * buttonScale);
 
+        // Center the scaled texture
+        SDL_Rect playRect;
+        playRect.w = scaledW;
+        playRect.h = scaledH;
+        playRect.x = (winWidth - scaledW) / 2;
+        playRect.y = (winHeight - scaledH) / 2;
+        SDL_RenderCopy(renderer, playAgainTex, nullptr, &playRect);
+    }
 }
 
 bool UIManager::handleUIEvent(const SDL_Event &event, GameState &gameState)
