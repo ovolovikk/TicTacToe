@@ -22,6 +22,8 @@
                 "${workspaceFolder}/src/Button.cpp",
                 "${workspaceFolder}/src/GameController.cpp",
                 "${workspaceFolder}/src/GameLogic.cpp",
+                "${workspaceFolder}/src/AssetManager.cpp",
+                "${workspaceFolder}/src/UIManager.cpp",
                 "-o",
                 "${workspaceFolder}/tic_tac_toe",
                 "-L/opt/homebrew/lib",
